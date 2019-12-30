@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Project 1</title>
+		<title>Project 3</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -22,7 +22,7 @@
 
 							<!-- Logo -->
 								<a href="index.html" class="logo">
-									<span class="symbol"><img src="images/logo.svg" alt="" /></span><span class="title">Phantom</span>
+								<span class="title">Project 3</span>
 								</a>
 
 						</div>
@@ -32,68 +32,111 @@
 				<!-- Main -->
 					<div id="main">
 						<div class="inner">
-							<h1>CO2 Avoidance Cost Analysis of Replacing Retired Fossil-Fuel Plants in North Carolina</h1>
-							<span class="image main"><img src="images/COAflow.jpg" alt="" /></span>
-							<h2>Introduction</h2>
-							<p> As a feasibility analysis of North Carolina’s Clean Energy Plan
-								published by Department of Environmental Quality, this model briefly
-								evaluated the difference in marginal cost of reducing GHG emissions,
-								i.e. increase in cost over decrease in GHG emissions, if North Carolina
-								starts to replace retired plants with renewable power plants at
-								earlier or later time. A typical NGCC and a solar plant are used
-								as examples to compare 3 ways in their cost of reducing GHG
-								emissions in 2060. The results of the model show that though
-								adopting solar plants in earlier period will result in higher
-								marginal cost, their difference is small, which can make renewable
-								energy plants as a promising alternative considering their
-								environmental advantages. This model is based on data of present
-								operating plants in North Carolina obtained from eGrid2016 and ATB. </p>
-							<h2>Background</h2>
-							<p> <span class="image right"><img src="images/stages.jpg" alt="" /></span>
-								North Carolina recently released a plan to significantly reduce
-								 greenhouse gases from electricity production over the next decade.
-								 The goal in electricity production sector is to get to zero emissions
-								 by 2050 as well as a 60 to 70% reduction from 2005 levels by 2030.
-								 In the conservation between Frank Stasio and Professor Pizer
-								 from Duke University, they mentioned that though cost of electricity
-								 for people in North Carolina will increase, the earlier we transit
-								 to renewable energy the better we will benefit in the future.
-								 It is clear that if we start earlier,  then higher percentage
-								 of renewable energy plants will have in the future. This model
-								 is designed to evaluate in electricity production sector, whether
-								 we will have lower marginal cost to reduce GHG emissions if
-								 we start to replace retired fossil fuel fired plants with
-								 renewable ones earlier. Solar plants with PV generators are used
-								  as an example for renewable energy plants, while NGCC plants
-									are set as the default choice for not using renewable energy. </p>
-							<h2>Assumptions</h2>
+							<h1>Social Influences on Climate Change Efforts of Countries</h1>
+							<h2>Variables</h2>
+							<h4>Reponse Variables</h4>
+							<ul>
+								<li>Climate Change Performance Index (CCPI) as a proxy of countries'
+								efforts on fighting climate change</li>
+							</ul>
+							<h4>Explanatory Variables</h4>
 							<ol>
-								<li>US’s natural gas price will remain at the present level for the future decades. </li>
-								<li>No technologies breakthrough in PV industries is taken into consideration. </li>
-								<li>Assuming the average life span for fossil fuel plans is 30 years.</li>
-								<li>If renewable energy plants are not used, the retired plants will be renewed as natural gas plants. </li>
-								<li>Electricity demand in North Carolina will remain a stable level in the future decades. </li>
+								<li>Energy Use</li>
+								<li>Coast Line Ratio</li>
+								<li>Renewable</li>
+								<li>Temperature Anomaly</li>
+								<li>PM2.5 Concentration</li>
+								<li>Culture Diversity</li>
+								<li>GDP</li>
+								<li>Democracy</li>
+								<li>Education Expenditure</li>
 							</ol>
-							<h2>Results and Conclusions</h2>
-							<div class="col-12"><span class="image fit"><img src="images/results.jpg" alt="" /></span></div>
-							<p>From the results in the chart, we can see replacing more retired
-								plants with solar plants will lead to higher marginal GHG reduction
-								cost. Period 1 is approximately 2.3 times of the second and the
-								second is about 1.7 times of the third. But cost between the three
-								approaches are close. As I didn’t involve the environmental loss
-								caused by higher GHG emissions, starting using solar plants at
-								Period 1 still have potential advantages, which will make renewable
-								energy as promising alternatives if proper legislations are conducted.
-							</p>
-							<h2>References</h2>
+							<h2>Method</h2>
+							<p>Multiple Linear Regression</p>
+							<h4>Packages</h4>
+							<ul>
+								<li>ggplot2</li>
+								<li>lmtest</li>
+								<li>tidyr</li>
+								<li>olsrr</li>
+								<li>car</li>
+								<li>GGally</li>
+								<li>broom</li>
+								<li>moments</li>
+								<li>stargazer</li>
+								<li>gvlma</li>
+							</ul>
+							<h2>R Code</h2>
+							 <pre><code>##Dataset preparation##
+getwd()
+setwd()
+CCPI<- read.csv("dataset_CCPI.csv")
+
+#Boxplot & histogram of CCPI
+boxplot(CCPI$CCPI,data=CCPI, main="CCPI Data (Sample Size = 56)", xlab="Countries", ylab="CCPI")
+hist(CCPI$CCPI, main="CCPI Data (Sample Size = 56)", xlab="CCPI", xlim=c(0,100),ylim=c(0,20), col="light blue")
+
+##Excluding country with too many NAs##
+Data<-CCPI[-which(CCPI$Country=='Chinese Taipei'),]
+
+##Log transformation and Demean##
+Data$log.GDP<-log(Data$GDP)-10.4
+Data$log.pm25<-log(Data$pm25)
+Data$log.Democracy<-log(107-Data$DemocracyScore)-3.1
+
+##Correlation Plot##
+columns<-c(3,4,5,6,7,8,9,10,11,2)
+ggpairs(Data, columns = columns, title = "",axisLabels = "show")
+columns<-c(3,4,5,8,9,11,12,13,14,2)
+ggpairs(Data, columns = columns, title = "",axisLabels = "show")
+head(Data)
+
+###Model###
+model<-lm(CCPI ~ EnergyUse + CoastLineRatio + Renewable + Tempanomaly + log.pm25
+          + CulturalDiversity + log.GDP*log.Democracy + EducationExpenditure, na.action = na.exclude, data=Data)
+summary(model)
+
+#Fitted vs. Residuals & QQ plot#
+par(mfrow=c(1,1))
+plot(model)
+
+#Breusch-Pagan Test#
+lmtest::bptest(model)
+
+#Multiconlinearity#
+vif<-car::vif(model)
+vif
+cor(Data$log.Democracy, Data$log.GDP, use = "complete.obs")
+#Farrar – Glauber Test#
+X<-Data[,c(3,4,6,7,9,10,11,12,13)]
+omcdiag(X,Data$CCPI)
+imcdiag(X,Data$CCPI)
+
+#Cooke's Test of Outliers#
+ols_plot_cooksd_bar(model)
+
+#Relevant values#
+glance(model) %>%
+  dplyr::select(adj.r.squared, sigma, AIC, p.value)
+
+#Assumptions General Test
+model.1<-lm(CCPI ~ EnergyUse + CoastLineRatio + Renewable + Tempanomaly + log.pm25
+          + CulturalDiversity + log.GDP*log.Democracy + EducationExpenditure, data=Data)
+gvmodel <- gvlma(model.1)
+summary(gvmodel)
+
+#Results output from stargazer#
+stargazer(Data,header = F, median = TRUE)
+stargazer(model,header = F)
+stargazer(vif,header = F)</code></pre>
+							<h2>Overview of Results</h2>
+							<p> </p>
+							<h2>Data Sources</h2>
 							<ol>
-								<li>https://www.wunc.org/post/peek-north-carolina-s-clean-energy-future</li>
-								<li>North Carolina Clean Energy Plan: Transitioning to a 21st century
-									electricity system. https://files.nc.gov/ncdeq/climate-change/clean-energy-plan/Clean-Energy-Plan--DRAFT-REPORT-08162019.pdf</li>
-								<li>Life Cycle Assessment of PV Greenhouse Gas Emissions: https://openei.org/apps/LCA/</li>
-								<li>Emissions & Generation Resource Integrated Database (eGRID) https://www.epa.gov/energy/emissions-generation-resource-integrated-database-egrid</li>
-								<li>Annual Technology Baseline (ATB) Datahttps://atb.nrel.gov/electricity/2019/data.html</li>
-								<li>https://www.eia.gov/electricity/data/browser
+								<li></li>
+								<li></li>
+								<li></li>
+								<li></li>
 							</ol>
 						</div>
 					</div>
@@ -103,7 +146,6 @@
 						<div class="inner">
 								<h2>Contact</h2>
 								<ul class="icons">
-									<li><a href="#" class="icon brands style1 fa-github"><span class="label">GitHub</span></a></li>
 									<li><a href="#" class="icon solid style1 fa-envelope"><span class="label">Email</span></a></li>
 								</ul>
 							</section>
