@@ -35,22 +35,89 @@
 							<h1>Projection of Beijing’s Annual Transportation GHG Emissions in 2035</h1>
 							<h2>Assumptions</h2>
 							<ol>
-								<li></li>
-								<li></li>
-								<li></li>
-								<li></li>
-								<li></li>
+								<li>GDP growth rate is taken as a proxy for PKT increase rate. It is assumed to maintain
+									 6.5% (GDP growth rate in 2017-2018) from 2018 to 2035. </li>
+								<li>Cargo turnover will increase as a rate of 0.8%, which is an regression
+									result from historic data in last 5 years. Heavy-duty and medium-duty freight have both 50% turnover share. </li>
+								<li>The PKT share of buses accounts for 70% of diesel and 30% of LNG buses; the PKT
+								share of trucks are 70% of diesel and 30% of gasoline trucks. Cars are considered as gasoline cars. </li>
+								<li>Transportation inter-city is not included in the discussion. </li>
 							</ol>
 							<h2>Method</h2>
-							<p> Responsible for calculation of: </p>
+							<p> Responsible for calculation of tranportation modes including
+								private cars, buses and trucks: </p>
+							<div class="table-wrapper">
+										<table>
+											<thead>
+												<tr>
+													<th>Mode</th>
+													<th>Type</th>
+													<th>Equation</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td rowspan="2">Private Cars</td>
+													<td>Gasoline Cars</td>
+													<td>CO<sub>2</sub>= pop * PKT/pop * VKT/PKT * E/VKT * CO<sub>2</sub>/E</td>
+												</tr>
+												<tr>
+													<td>Electric Cars</td>
+													<td>CO<sub>2</sub>= pop * PKT/pop * VKT/PKT * Efficiency * Emission Factor<sub>grid</sub></td>
+												</tr>
+												<tr>
+													<td rowspan="2">Buses</td>
+													<td>Diesel/LNG Buses</td>
+													<td>CO<sub>2</sub>= pop * PKT/pop * VKT/PKT * E/VKT * CO<sub>2</sub>/E</td>
+												</tr>
+												<tr>
+													<td>Electric Buses</td>
+													<td>CO<sub>2</sub>= pop * PKT/pop * VKT/PKT * Efficiency * Emission Factor<sub>grid</sub></td>
+												</tr>
+												<tr>
+													<td>Trucks</td>
+													<td>Diesel/Gasoline/LNG Trucks</td>
+													<td>CO<sub>2</sub> = Q * e * Emission Factor<sub>fuel</sub></td>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr>
+													<td colspan="3">*pop-population, PKT-passenger kilometer travel(km),
+														VKT-vehicle kilometer travel(km), E-energy consumption(Btu), Efficiency(kWh/100km),
+														CO<sub>2</sub>-CO<sub>2</sub> equivalent GHG emisisons(kg), Q-cargo turnover(100km·tons),
+													e-diesel equivalent lorry energy intensity(L/100km·km)</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
 							<h2>Overview of Results</h2>
-							<p> </p>
+								<div class="box alt">
+											<div class="row gtr-uniform">
+												<div class="col-6"><span class="image fit"><img src="images/co22035.jpg" alt=""/></span></div>
+												<div class="col-6"><span class="image fit"><img src="images/percent.jpg" alt="" /></span></div>
+											</div>
+								</div>
+							<p>According to the projection, GHG emissionsof Beijing in 2035 from cars, buses and trucks
+							will increase to three times as it is today. Private cars will still
+							be the major source among these three modes. Howevere, if considered With strategies,
+							projected GHG emissions in 2035 can be 50% of this result. The assumed specific strategies
+							are listed below. Redcution from cars are the most potential approach
+							with a percentage of nearly 70%, especially considering its large contribute to
+							total GHG emissions. </p>
+							<ol>
+								<li>Increase fuel economy of gasoline cars fleet to 58.8 MPG.</li>
+								<li>Increase PKT share of electric cars to 40%, with an average efficiency of 12kWh/100km.</li>
+								<li>Increase PKT share of electric buses to , with an anverage efficiency of 75kWh/100km.</li>
+								<li>Develop more renewable energy to reduce emission factor of grid to a goal of 0.4kg/kWh. </li>
+								<li>Encourage LNG trucks to substitute diesel trucks for medium-duty freight. </li>
+							</ol>
 							<h2>Data Sources</h2>
 							<ol>
-								<li></li>
-								<li></li>
-								<li></li>
-								<li></li>
+								<li>2019 Beijing Annual Transport Report: http://www.bjtrc.org.cn/List/index/cid/7.html</li>
+								<li>Transportation Energy Data Book Edition 37.2 </li>
+								<li>China Highway: Freight Turnover. https://www.ceicdata.com/zh-hans/china/highway-freight-turnover</li>
+								<li>Average Freight Energy Intensity And Activity in 2015. https://www.iea.org/newsroom/energysnapshots/average-freight-energy-intensity-and-activity.html</li>
+								<li>How much carbon dioxide is produced when different fuels are burned? EIA website. Last reviewed: June 4, 2019. https://www.eia.gov/tools/faqs/faq.php?id=73&t=11</li>
 							</ol>
 						</div>
 					</div>
@@ -64,7 +131,7 @@
 								</ul>
 							</section>
 							<ul class="copyright">
-								<li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+								<li>&copy; All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
 							</ul>
 						</div>
 					</footer>
