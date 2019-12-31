@@ -33,23 +33,26 @@
 					<div id="main">
 						<div class="inner">
 							<h1>Social Influences on Climate Change Efforts of Countries</h1>
+							<span class="image main"><img src="images/CCPI.jpg" alt="" /></span>
+							<p style="text-align:right;"><i>Image scource: Overall Results CCPI 2019, Germanwatch, NewClimate Institute & Climate Action Network</i></p>
+							<h2>Scope</h2>
+							<p>56 countries whose climate protection performances were evaluated by
+							 <a href="https://www.climate-change-performance-index.org/the-climate-change-performance-index-2019">CCPI 2019</a>.</p>
 							<h2>Variables</h2>
 							<h4>Reponse Variables</h4>
-							<ul>
-								<li>Climate Change Performance Index (CCPI) as a proxy of countries'
-								efforts on fighting climate change</li>
-							</ul>
+							<p>Climate Change Performance Index (CCPI) as a proxy of countries'
+								efforts on fighting climate change</p>
 							<h4>Explanatory Variables</h4>
 							<ol>
-								<li>Energy Use</li>
-								<li>Coast Line Ratio</li>
-								<li>Renewable</li>
-								<li>Temperature Anomaly</li>
-								<li>PM2.5 Concentration</li>
-								<li>Culture Diversity</li>
-								<li>GDP</li>
-								<li>Democracy</li>
-								<li>Education Expenditure</li>
+								<li>Energy Use (Energy consumption in oil equivalent per capita, kg)</li>
+								<li>Coast Line Ratio (Ratio of coastline to area, m/km<sup>2</sup>))</li>
+								<li>Renewable (Renewable energy as percent of total energy consumption in 2014, %)</li>
+								<li>Temperature Anomaly (Average projected temperature change from 2020 to 2039, ◦C)</li>
+								<li>PM2.5 Concentration (Mean annual exposure of PM2.5 air pollution, mg/cm<sup>3</sup>)</li>
+								<li>Culture Diversity (Degree of similarity of structural relationship between languages)</li>
+								<li>GDPpc (GDP per capita, $)</li>
+								<li>Democracy Score (Level of political rights and civil liberties in a nation in 2018)</li>
+								<li>Education Expenditure (Government expenditure on education as percent of GDP in most recent year, %)</li>
 							</ol>
 							<h2>Method</h2>
 							<p>Multiple Linear Regression</p>
@@ -67,77 +70,77 @@
 								<li>gvlma</li>
 							</ul>
 							<h2>R Code</h2>
-							 <pre><code>##Dataset preparation##
+							 	<pre><code>##Dataset preparation##
 getwd()
 setwd()
-CCPI<- read.csv("dataset_CCPI.csv")
-
+CCPI<- read.csv("dataset_CCPI.csv")</br>
 #Boxplot & histogram of CCPI
 boxplot(CCPI$CCPI,data=CCPI, main="CCPI Data (Sample Size = 56)", xlab="Countries", ylab="CCPI")
-hist(CCPI$CCPI, main="CCPI Data (Sample Size = 56)", xlab="CCPI", xlim=c(0,100),ylim=c(0,20), col="light blue")
-
+hist(CCPI$CCPI, main="CCPI Data (Sample Size = 56)", xlab="CCPI", xlim=c(0,100),ylim=c(0,20), col="light blue")</br>
 ##Excluding country with too many NAs##
-Data<-CCPI[-which(CCPI$Country=='Chinese Taipei'),]
-
+Data<-CCPI[-which(CCPI$Country=='Chinese Taipei'),]</br>
 ##Log transformation and Demean##
-Data$log.GDP<-log(Data$GDP)-10.4
+Data$log.<-log(Data$GDPpc)-10.4
 Data$log.pm25<-log(Data$pm25)
-Data$log.Democracy<-log(107-Data$DemocracyScore)-3.1
-
+Data$log.Democracy<-log(107-Data$DemocracyScore)-3.1</br>
 ##Correlation Plot##
 columns<-c(3,4,5,6,7,8,9,10,11,2)
 ggpairs(Data, columns = columns, title = "",axisLabels = "show")
-columns<-c(3,4,5,8,9,11,12,13,14,2)
+columns<-c(4,6,7,9,10,11,12,13,14,2)
 ggpairs(Data, columns = columns, title = "",axisLabels = "show")
-head(Data)
-
+head(Data)</br>
 ###Model###
 model<-lm(CCPI ~ EnergyUse + CoastLineRatio + Renewable + Tempanomaly + log.pm25
-          + CulturalDiversity + log.GDP*log.Democracy + EducationExpenditure, na.action = na.exclude, data=Data)
-summary(model)
-
+          + CulturalDiversity + log.GDPpc*log.Democracy + EducationExpenditure, na.action = na.exclude, data=Data)
+summary(model)</br>
 #Fitted vs. Residuals & QQ plot#
 par(mfrow=c(1,1))
-plot(model)
-
+plot(model)</br>
 #Breusch-Pagan Test#
-lmtest::bptest(model)
-
+lmtest::bptest(model)</br>
 #Multiconlinearity#
 vif<-car::vif(model)
-vif
-cor(Data$log.Democracy, Data$log.GDP, use = "complete.obs")
+cor(Data$log.Democracy, Data$log.GDPpc, use = "complete.obs")
 #Farrar – Glauber Test#
-X<-Data[,c(3,4,6,7,9,10,11,12,13)]
+X<-Data[,c(4,6,7,9,10,11,12,13,14)]
 omcdiag(X,Data$CCPI)
-imcdiag(X,Data$CCPI)
-
+imcdiag(X,Data$CCPI)</br>
 #Cooke's Test of Outliers#
-ols_plot_cooksd_bar(model)
-
+ols_plot_cooksd_bar(model)</br>
 #Relevant values#
 glance(model) %>%
-  dplyr::select(adj.r.squared, sigma, AIC, p.value)
-
+  dplyr::select(adj.r.squared, sigma, AIC, p.value)</br>
 #Assumptions General Test
 model.1<-lm(CCPI ~ EnergyUse + CoastLineRatio + Renewable + Tempanomaly + log.pm25
-          + CulturalDiversity + log.GDP*log.Democracy + EducationExpenditure, data=Data)
+          + CulturalDiversity + log.GDPpc*log.Democracy + EducationExpenditure, data=Data)
 gvmodel <- gvlma(model.1)
-summary(gvmodel)
-
+summary(gvmodel)</br>
 #Results output from stargazer#
 stargazer(Data,header = F, median = TRUE)
 stargazer(model,header = F)
 stargazer(vif,header = F)</code></pre>
-							<h2>Overview of Results</h2>
-							<p> </p>
-							<h2>Data Sources</h2>
-							<ol>
-								<li></li>
-								<li></li>
-								<li></li>
-								<li></li>
-							</ol>
+			   			<section>
+									<h2>Overview of Results</h2>
+									<p><span class="image right"><img src="images/Routput.jpg" align="left"/></span>
+										The regression results show that temperature anomaly, education
+										expenditure, interaction of GDPpc and democracy level have
+										significant relationships with CCPI when other variables
+										are held constant. Particularly, countries with
+										higher education expenditure, higher predicted temperature anomaly
+										and higher democracy level tend to perform better on fighting
+										climate change. The effect of GDPpc is dependent on democracy
+										level. There are three observations deleted due to missings in data.
+										The adjusted R<sup>2</sup> is 0.656 with F statistics of 10.721(df = 10;41).
+									<h2>Data Sources</h2>
+									<ol>
+										<li>The World Bank. </li>
+										<li>The Word Factbook, Geography, Coastline. CIA. Page last updated December 06, 2019 </li>
+										<li><a href="https://climateknowledgeportal.worldbank.org/">Change Knowledge Portal, World Bank Group</a>.</li>
+										<li><a href="https://freedomhouse.org/content/freedom-world-data-and-resources">Freedom in the World.</a></li>
+										<li>JAMES D. FEARON. Ethnic and Cultural Diversity by Country. Journal of
+										Economic Growth, Vol. 8, No. 2 (Jun., 2003), pp. 195-222. https://www.jstor.org/stable/40215943</li>
+									</ol>
+				  			</section>
 						</div>
 					</div>
 
@@ -150,7 +153,7 @@ stargazer(vif,header = F)</code></pre>
 								</ul>
 							</section>
 							<ul class="copyright">
-								<li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+								<li>&copy;All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
 							</ul>
 						</div>
 					</footer>
